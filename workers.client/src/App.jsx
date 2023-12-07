@@ -1,30 +1,31 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
-    const [forecasts, setForecasts] = useState();
+    const [workers, setWorkers] = useState();
 
     useEffect(() => {
-        populateWeatherData();
+        populateWorkersData();
     }, []);
 
-    const contents = forecasts === undefined
+    const contents = workers === undefined
         ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
         : <table className="table table-striped" aria-labelledby="tabelLabel">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
+                    <th>name</th>
+                    <th>location</th>
+                    <th>phone</th>
+                    <th>pricePerHour</th>
                 </tr>
             </thead>
             <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
+                {workers.map(worker =>
+                    <tr key={worker.workerID}>
+                        <td>{worker.name}</td>
+                        <td>{worker.location}</td>
+                        <td>{worker.phone}</td>
+                        <td>{worker.pricePerHour}</td>
                     </tr>
                 )}
             </tbody>
@@ -37,11 +38,27 @@ function App() {
             {contents}
         </div>
     );
-    
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
+
+    async function populateWorkersData() {
+        const apiUrl = 'https://localhost:7230/api/IndustrialWorkers';
+        //fetch(apiUrl, {
+        //    method: 'GET',
+        //    headers: {
+        //        'Accept': 'application/json',
+        //    },
+        //})
+        //    .then(response => response.json())
+        //    .then(data => setWorkers(data))
+        //    .catch(error => console.error('Error:', error));
+
+        axios.get(apiUrl)
+            .then(res => {
+                setWorkers(res.data);
+            })
+            .catch(error => {
+                console.log('Error', error);
+            });
+
     }
 }
 
