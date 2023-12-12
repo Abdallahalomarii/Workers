@@ -1,17 +1,19 @@
-﻿using Workers.Server.Model.Models;
+﻿using System.Security.Claims;
+using Workers.Server.Model.DTOs;
+using Workers.Server.Model.Models;
 
 namespace Workers.Server.Model.Interfaces
 {
     public interface IReview
     {
-        public Task<Review> AddReview(Review review);
+        public Task<ReviewDTO> AddReview(PutAndAddReviewDTO review,ClaimsPrincipal principal);
 
-        public Task<ICollection<Review>> GetAllReviews();
+        public Task<List<ReviewDTO>> GetAllReviews();
 
-        public Task<Review> GetReviewById(int userID, int workshopId);
+        public Task<ReviewDTO> GetReviewById(string userID, int workshopId);
 
-        public Task<Review> UpdateReview(int userId, int workshopId, Review review);
+        public Task<ReviewDTO> UpdateReview(string userID, int workshopId, PutAndAddReviewDTO review);
 
-        public Task DeleteReview(int userId, int workshopId);
+        public Task DeleteReview(string userID, int workshopId);
     }
 }

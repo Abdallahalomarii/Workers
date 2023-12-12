@@ -47,6 +47,29 @@ namespace Workers.Server.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "admin manager",
+                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000000",
+                            Name = "Admin Manager",
+                            NormalizedName = "ADMIN MANAGER"
+                        },
+                        new
+                        {
+                            Id = "worker admin",
+                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000000",
+                            Name = "Worker Admin",
+                            NormalizedName = "WORKER ADMIN"
+                        },
+                        new
+                        {
+                            Id = "user admin",
+                            ConcurrencyStamp = "00000000-0000-0000-0000-000000000000",
+                            Name = "User Admin",
+                            NormalizedName = "USER ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -157,11 +180,11 @@ namespace Workers.Server.Migrations
 
             modelBuilder.Entity("Workers.Server.Model.Models.IndustrialWorker", b =>
                 {
-                    b.Property<int>("WorkerID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorkerID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -183,7 +206,7 @@ namespace Workers.Server.Migrations
                     b.Property<double>("Rate")
                         .HasColumnType("float");
 
-                    b.HasKey("WorkerID");
+                    b.HasKey("ID");
 
                     b.ToTable("IndustrialWorkers");
                 });
@@ -212,58 +235,52 @@ namespace Workers.Server.Migrations
 
             modelBuilder.Entity("Workers.Server.Model.Models.WorkListing", b =>
                 {
-                    b.Property<int>("WorkID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorkID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IndustrialWorkerWorkerID")
+                    b.Property<int>("IndustrialWorkerID")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WorkerID")
-                        .HasColumnType("int");
+                    b.HasKey("ID");
 
-                    b.HasKey("WorkID");
-
-                    b.HasIndex("IndustrialWorkerWorkerID");
+                    b.HasIndex("IndustrialWorkerID");
 
                     b.ToTable("WorkListings");
                 });
 
             modelBuilder.Entity("Workers.Server.Model.Models.Workshop", b =>
                 {
-                    b.Property<int>("WorkshopID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorkshopID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WorkerID")
+                    b.Property<int>("IndustrialWorkerID")
                         .HasColumnType("int");
 
                     b.Property<string>("Workshop_Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("industrialWorkerWorkerID")
-                        .HasColumnType("int");
+                    b.HasKey("ID");
 
-                    b.HasKey("WorkshopID");
-
-                    b.HasIndex("industrialWorkerWorkerID");
+                    b.HasIndex("IndustrialWorkerID");
 
                     b.ToTable("Workshops");
                 });
@@ -413,7 +430,7 @@ namespace Workers.Server.Migrations
                 {
                     b.HasOne("Workers.Server.Model.Models.IndustrialWorker", "IndustrialWorker")
                         .WithMany("WorkListings")
-                        .HasForeignKey("IndustrialWorkerWorkerID")
+                        .HasForeignKey("IndustrialWorkerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -422,13 +439,13 @@ namespace Workers.Server.Migrations
 
             modelBuilder.Entity("Workers.Server.Model.Models.Workshop", b =>
                 {
-                    b.HasOne("Workers.Server.Model.Models.IndustrialWorker", "industrialWorker")
+                    b.HasOne("Workers.Server.Model.Models.IndustrialWorker", "IndustrialWorker")
                         .WithMany("Workshops")
-                        .HasForeignKey("industrialWorkerWorkerID")
+                        .HasForeignKey("IndustrialWorkerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("industrialWorker");
+                    b.Navigation("IndustrialWorker");
                 });
 
             modelBuilder.Entity("Workers.Server.Model.Models.IndustrialWorker", b =>

@@ -5,16 +5,15 @@ namespace Workers.Server.Model.Models
 {
     public class Workshop
     {
-        [Key]
-        public int WorkshopID { get; set; }
+        public int ID { get; set; }
 
-        public int WorkerID { get; set; }
+        public int IndustrialWorkerID { get; set; }
 
         public string Workshop_Name { get; set; }
 
         public string Description { get; set; }
 
-        public IndustrialWorker industrialWorker { get; set; }
+        public IndustrialWorker IndustrialWorker { get; set; }
 
         public ICollection<Review> Reviews { get; set; }
 

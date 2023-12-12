@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Workers.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDB : Migration
+    public partial class setupDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,7 +58,7 @@ namespace Workers.Server.Migrations
                 name: "IndustrialWorkers",
                 columns: table => new
                 {
-                    WorkerID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -67,7 +69,7 @@ namespace Workers.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IndustrialWorkers", x => x.WorkerID);
+                    table.PrimaryKey("PK_IndustrialWorkers", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -180,21 +182,20 @@ namespace Workers.Server.Migrations
                 name: "WorkListings",
                 columns: table => new
                 {
-                    WorkID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    WorkerID = table.Column<int>(type: "int", nullable: false),
+                    IndustrialWorkerID = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IndustrialWorkerWorkerID = table.Column<int>(type: "int", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WorkListings", x => x.WorkID);
+                    table.PrimaryKey("PK_WorkListings", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_WorkListings_IndustrialWorkers_IndustrialWorkerWorkerID",
-                        column: x => x.IndustrialWorkerWorkerID,
+                        name: "FK_WorkListings_IndustrialWorkers_IndustrialWorkerID",
+                        column: x => x.IndustrialWorkerID,
                         principalTable: "IndustrialWorkers",
-                        principalColumn: "WorkerID",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -202,21 +203,20 @@ namespace Workers.Server.Migrations
                 name: "Workshops",
                 columns: table => new
                 {
-                    WorkshopID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    WorkerID = table.Column<int>(type: "int", nullable: false),
+                    IndustrialWorkerID = table.Column<int>(type: "int", nullable: false),
                     Workshop_Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    industrialWorkerWorkerID = table.Column<int>(type: "int", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Workshops", x => x.WorkshopID);
+                    table.PrimaryKey("PK_Workshops", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Workshops_IndustrialWorkers_industrialWorkerWorkerID",
-                        column: x => x.industrialWorkerWorkerID,
+                        name: "FK_Workshops_IndustrialWorkers_IndustrialWorkerID",
+                        column: x => x.IndustrialWorkerID,
                         principalTable: "IndustrialWorkers",
-                        principalColumn: "WorkerID",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -242,8 +242,18 @@ namespace Workers.Server.Migrations
                         name: "FK_Reviews_Workshops_WorkshopID",
                         column: x => x.WorkshopID,
                         principalTable: "Workshops",
-                        principalColumn: "WorkshopID",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "admin manager", "00000000-0000-0000-0000-000000000000", "Admin Manager", "ADMIN MANAGER" },
+                    { "user admin", "00000000-0000-0000-0000-000000000000", "User Admin", "USER ADMIN" },
+                    { "worker admin", "00000000-0000-0000-0000-000000000000", "Worker Admin", "WORKER ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -291,14 +301,14 @@ namespace Workers.Server.Migrations
                 column: "WorkshopID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_WorkListings_IndustrialWorkerWorkerID",
+                name: "IX_WorkListings_IndustrialWorkerID",
                 table: "WorkListings",
-                column: "IndustrialWorkerWorkerID");
+                column: "IndustrialWorkerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Workshops_industrialWorkerWorkerID",
+                name: "IX_Workshops_IndustrialWorkerID",
                 table: "Workshops",
-                column: "industrialWorkerWorkerID");
+                column: "IndustrialWorkerID");
         }
 
         /// <inheritdoc />

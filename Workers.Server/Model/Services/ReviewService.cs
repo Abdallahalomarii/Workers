@@ -1,33 +1,118 @@
-﻿using Workers.Server.Model.Interfaces;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Workers.Server.Data;
+using Workers.Server.Model.DTOs;
+using Workers.Server.Model.Interfaces;
 using Workers.Server.Model.Models;
+using Workers.Server.Models;
 
 namespace Workers.Server.Model.Services
 {
     public class ReviewService : IReview
     {
-        public Task<Review> AddReview(Review review)
+        private readonly WorkersDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ReviewService(WorkersDbContext context, UserManager<ApplicationUser> userManager)
         {
-            throw new NotImplementedException();
+            _context = context;
+            _userManager = userManager;
         }
 
-        public Task DeleteReview(int userId, int workshopId)
+        public async Task<ReviewDTO> AddReview(PutAndAddReviewDTO review, ClaimsPrincipal principal)
         {
-            throw new NotImplementedException();
+            var getUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = await _userManager.FindByIdAsync(getUserId);
+            var newReview = new Review
+            {
+                UserID = user.Id,
+                WorkshopID = review.WorkshopID,
+                Commennt = review.Commennt,
+                Rating = review.Rating,
+            };
+            await _context.Reviews.AddAsync(newReview);
+            await _context.SaveChangesAsync();
+
+            var returnedReviewRecord = await GetReviewById(newReview.UserID, newReview.WorkshopID);
+
+            if (returnedReviewRecord != null)
+            {
+                return returnedReviewRecord;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public Task<ICollection<Review>> GetAllReviews()
+        public async Task DeleteReview(string userID, int workshopId)
         {
-            throw new NotImplementedException();
+            var review = await _context.Reviews.FindAsync(userID, workshopId);
+            if (review != null)
+            {
+                 _context.Entry(review).State = EntityState.Deleted;
+                await _context.SaveChangesAsync();
+
+            }
+            
         }
 
-        public Task<Review> GetReviewById(int userID, int workshopId)
+        public async Task<List<ReviewDTO>> GetAllReviews()
         {
-            throw new NotImplementedException();
+            var reviews = await _context.Reviews
+                .Select(rv=> new ReviewDTO
+                {
+                    UserID = rv.UserID,
+                    WorkshopID = rv.WorkshopID,
+                    Commennt = rv.Commennt,
+                    Rating = rv.Rating
+                }).ToListAsync();
+            if (reviews.Count == 0)
+            {
+                return null;
+            }
+            return reviews;
         }
 
-        public Task<Review> UpdateReview(int userId, int workshopId, Review review)
+        public async Task<ReviewDTO> GetReviewById(string userID, int workshopId)
         {
-            throw new NotImplementedException();
+            var review = await _context.Reviews
+                .Select(rv=> new ReviewDTO
+                {
+                    UserID = rv.UserID,
+                    WorkshopID = rv.WorkshopID,
+                    Commennt = rv.Commennt,
+                    Rating = rv.Rating
+                }).FirstOrDefaultAsync(keys => keys.UserID == userID && keys.WorkshopID == workshopId);
+            if (review == null)
+            {
+                return null;
+            }
+            return review;
+        }
+
+        public async Task<ReviewDTO> UpdateReview(string userID, int workshopId, PutAndAddReviewDTO review)
+        {
+            var reviewToUpdate = await _context.Reviews.FindAsync(userID,workshopId);
+            if (reviewToUpdate != null)
+            {
+                reviewToUpdate.UserID = userID;
+                reviewToUpdate.WorkshopID = workshopId;
+                reviewToUpdate.Commennt = review.Commennt;
+                reviewToUpdate.Rating = review.Rating;
+
+                _context.Entry(reviewToUpdate).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+            }
+            var returnReviewRecord = await GetReviewById(reviewToUpdate.UserID,reviewToUpdate.WorkshopID);
+            if (returnReviewRecord != null)
+            {
+                return returnReviewRecord;
+            }
+            return null;
         }
     }
 }
