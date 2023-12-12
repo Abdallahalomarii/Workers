@@ -1,16 +1,17 @@
-﻿using Workers.Server.Model.Models;
+﻿using Workers.Server.Model.DTOs;
+using Workers.Server.Model.Models;
 
 namespace Workers.Server.Model.Interfaces
 {
     public interface IWorkListing
     {
-        public Task<WorkListing> AddWorkListing(WorkListing workListing);
+        public Task<WorkListingDTO> AddWorkListing(PutAndAddWorkListingDTO workListing);
 
-        public Task<List<WorkListing>> GetAllWorkListing();
+        public Task<List<WorkListingDTO>> GetAllWorkListing();
 
-        public Task<WorkListing> GetWorkLisitngById(int workListingId);
+        public Task<WorkListingDTO> GetWorkLisitngById(int workListingId);
 
-        public Task<WorkListing> UpdateWorkLisiting(int WorkListingId, WorkListing workListing);
+        public Task<WorkListingDTO> UpdateWorkLisiting(int WorkListingId, PutAndAddWorkListingDTO workListing);
 
         public Task DeleteWorkLisitng(int WorkListingId);
     }

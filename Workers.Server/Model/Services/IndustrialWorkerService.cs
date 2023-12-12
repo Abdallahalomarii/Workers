@@ -14,7 +14,7 @@ namespace Workers.Server.Model.Services
         {
             _context = context;
         }
-        public async Task<AddIndustrialDTO> AddIndustrialWorker(AddIndustrialDTO industrialWorker)
+        public async Task<IndustrialWorkerDTO> AddIndustrialWorker(PutAndAddIndustrialWorkerDTO industrialWorker)
         {
 
             var worker = new IndustrialWorker
@@ -28,10 +28,18 @@ namespace Workers.Server.Model.Services
             };
 
             await _context.IndustrialWorkers.AddAsync(worker);
-            
+
             await _context.SaveChangesAsync();
 
-            return industrialWorker;
+            var returnedWorker = await GetIndustrialWorkerById(worker.ID);
+            if (returnedWorker != null)
+            {
+                return returnedWorker;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task DeleteIndustrialWorker(int workerID)
@@ -48,34 +56,54 @@ namespace Workers.Server.Model.Services
             }
         }
 
-        public async Task<List<IndustrialWorker>> GetAllIndustrialWorkers()
+        public async Task<List<IndustrialWorkerDTO>> GetAllIndustrialWorkers()
         {
-            var workers = await _context.IndustrialWorkers.ToListAsync();
-            if (workers.Count != 0)
+            var worker = await _context.IndustrialWorkers
+                .Select(wk => new IndustrialWorkerDTO
+                {
+                    ID = wk.ID,
+                    Name = wk.Name,
+                    Location = wk.Location,
+                    Phone = wk.Phone,
+                    PricePerHour = wk.PricePerHour,
+                    Rate = wk.Rate,
+                    IsActive = wk.IsActive
+                }).ToListAsync();
+            if (worker.Count != 0)
             {
-                return workers;
+                return worker;
             }
             else
             {
-                throw new Exception("There is no workers in the system!");
+                return null;
             }
         }
 
-        public async Task<IndustrialWorker> GetIndustrialWorkerById(int workerID)
+        public async Task<IndustrialWorkerDTO> GetIndustrialWorkerById(int workerID)
         {
-            var worker = await _context.IndustrialWorkers.FindAsync(workerID);
+            var worker = await _context.IndustrialWorkers
+               .Where(wk => wk.ID == workerID)
+               .Select(wk => new IndustrialWorkerDTO
+               {
+                   ID = wk.ID,
+                   Name = wk.Name,
+                   Location = wk.Location,
+                   Phone = wk.Phone,
+                   PricePerHour = wk.PricePerHour,
+                   Rate = wk.Rate,
+                   IsActive = wk.IsActive
+               }).FirstOrDefaultAsync();
             if (worker != null)
             {
                 return worker;
             }
             else
             {
-                throw new Exception("Worker id not found");
-
+                return null;
             }
         }
 
-        public async Task<IndustrialWorker> UpdateIndustrialWorker(int workerID, IndustrialWorker industrialWorker)
+        public async Task<IndustrialWorkerDTO> UpdateIndustrialWorker(int workerID, PutAndAddIndustrialWorkerDTO industrialWorker)
         {
             var worker = await _context.IndustrialWorkers.FindAsync(workerID);
             if (worker != null)
@@ -89,12 +117,20 @@ namespace Workers.Server.Model.Services
 
                 _context.Entry(worker).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
-                return worker;
+                var returnedWorker = await GetIndustrialWorkerById(workerID);
+                if (returnedWorker != null)
+                {
+                    return returnedWorker;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
-                throw new Exception("Update not completed because the worker is not found in the system!");
+                return null;
+            }
             }
         }
     }
-}

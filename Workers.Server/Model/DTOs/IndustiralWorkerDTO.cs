@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Workers.Server.Model.Models
+namespace Workers.Server.Model.DTOs
 {
-    public class IndustrialWorker
+    public class IndustrialWorkerDTO
     {
-        [Key]
         public int ID { get; set; }
 
-        [Required]
         public string Name { get; set; }
 
         public string? Location { get; set; }
@@ -18,13 +16,7 @@ namespace Workers.Server.Model.Models
 
         public bool IsActive { get; set; }
 
-        [Range(0,10, ErrorMessage ="Rating must be between the 0 and the 10 float number accepted!")]
+        [Range(0, 10, ErrorMessage = "Rating must be between the 0 and the 10 float number accepted!")]
         public double Rate { get; set; }
-
-        public ICollection<WorkListing> WorkListings { get; set; }
-
-        public ICollection<Workshop> Workshops { get; set; }
-
-
     }
 }

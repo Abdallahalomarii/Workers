@@ -2,7 +2,7 @@
 
 namespace Workers.Server.Model.DTOs
 {
-    public class AddIndustrialDTO
+    public class PutAndAddIndustrialWorkerDTO
     {
         public string Name { get; set; }
 
