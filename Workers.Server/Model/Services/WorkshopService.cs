@@ -43,19 +43,20 @@ namespace Workers.Server.Model.Services
                 _context.Entry(workshop).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
             }
-         
+
         }
 
-        public async Task<List<WorkshopDTO>> GetAllWorkshop()
+        public async Task<List<WorkshopDTO>> GetAllWorkshop(int workerId)
         {
             var workshops = await _context.Workshops
                 .Select(wks => new WorkshopDTO
                 {
                     ID = wks.ID,
                     IndustrialWorkerID = wks.IndustrialWorkerID,
-                    Workshop_Name= wks.Workshop_Name,
+                    Workshop_Name = wks.Workshop_Name,
                     Description = wks.Description
-                }).ToListAsync();
+                }).Where(wId => wId.IndustrialWorkerID == workerId).ToListAsync();
+
             if (workshops.Count > 0)
             { return workshops; }
             else
@@ -73,7 +74,7 @@ namespace Workers.Server.Model.Services
                    IndustrialWorkerID = wks.IndustrialWorkerID,
                    Workshop_Name = wks.Workshop_Name,
                    Description = wks.Description
-               }).FirstOrDefaultAsync(x=> x.ID == WorkshopId);
+               }).FirstOrDefaultAsync(x => x.ID == WorkshopId);
 
             if (workshop != null)
             { return workshop; }

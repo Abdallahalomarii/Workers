@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Workers.Server.Models;
 
@@ -11,6 +12,8 @@ namespace Workers.Server.Model.Services
         private IConfiguration _configuration;
 
         private SignInManager<ApplicationUser> _signInManager;
+
+        public static List<string> RevokedTokens { get; } = new List<string>();
 
         public JWTTokenService(IConfiguration configuration, SignInManager<ApplicationUser> signInManager)
         {
@@ -25,7 +28,10 @@ namespace Workers.Server.Model.Services
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = GetSecurityKey(configuration),
                 ValidateIssuer = false,
-                ValidateAudience = false
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                LifetimeValidator = LifetimeValidator,
+
             };
         }
 
@@ -49,14 +55,36 @@ namespace Workers.Server.Model.Services
             {
                 throw new InvalidOperationException("The principla not found");
             }
-        
+
             var signingKey = GetSecurityKey(_configuration);
-            var toekn = new JwtSecurityToken(
-                expires: DateTime.UtcNow + expireIn,
-                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                claims: principal.Claims
-                );
-            return new JwtSecurityTokenHandler().WriteToken(toekn);
+            var token = new JwtSecurityTokenHandler().CreateToken(new SecurityTokenDescriptor
+            {
+                Expires = DateTime.UtcNow + expireIn,
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+                Subject = principal.Identity as ClaimsIdentity,
+                Claims = new Dictionary<string, object>
+                {
+                    { 
+                        JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()
+                    }
+                }
+            });
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private static bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters parameters)
+        {
+            var now = DateTime.UtcNow;
+            return (expires != null && expires > now && notBefore <= now) && !IsTokenRevoked(token.Id);
+        }
+        public void RevokeToken(string jti)
+        {
+            RevokedTokens.Add(jti);
+        }
+
+        public static bool IsTokenRevoked(string jti)
+        {
+            return RevokedTokens.Contains(jti);
         }
     }
 }

@@ -12,8 +12,8 @@ using Workers.Server.Data;
 namespace Workers.Server.Migrations
 {
     [DbContext(typeof(WorkersDbContext))]
-    [Migration("20231211221727_setupDataBase")]
-    partial class setupDataBase
+    [Migration("20231225133806_setupdatabase")]
+    partial class setupdatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -160,6 +160,23 @@ namespace Workers.Server.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "1a2e6f7b-dc4a-4c81-bbe2-8cd28f5e63f2",
+                            RoleId = "admin manager"
+                        },
+                        new
+                        {
+                            UserId = "3f9d28e4-6217-4a55-99b2-6e124c81f7c5",
+                            RoleId = "worker admin"
+                        },
+                        new
+                        {
+                            UserId = "8b76a915-47c3-4f0d-98d6-9b284edaf7ae",
+                            RoleId = "user admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -199,39 +216,60 @@ namespace Workers.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Phone")
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PricePerHour")
                         .HasColumnType("int");
 
-                    b.Property<double>("Rate")
+                    b.Property<double?>("Rate")
                         .HasColumnType("float");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
 
+                    b.HasIndex("UserID")
+                        .IsUnique();
+
                     b.ToTable("IndustrialWorkers");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            IsActive = true,
+                            Location = "Jordan",
+                            Name = "John Doe",
+                            PhoneNumber = "07833212312",
+                            PricePerHour = 20,
+                            Rate = 8.5,
+                            UserID = "3f9d28e4-6217-4a55-99b2-6e124c81f7c5"
+                        });
                 });
 
             modelBuilder.Entity("Workers.Server.Model.Models.Review", b =>
                 {
-                    b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("WorkshopID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Commennt")
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.HasKey("UserID", "WorkshopID");
+                    b.HasKey("WorkshopID", "UserID");
 
-                    b.HasIndex("WorkshopID");
+                    b.HasIndex("UserID")
+                        .IsUnique();
 
                     b.ToTable("Reviews");
                 });
@@ -248,7 +286,7 @@ namespace Workers.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IndustrialWorkerID")
+                    b.Property<int?>("IndustrialWorkerID")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -260,6 +298,35 @@ namespace Workers.Server.Migrations
                     b.HasIndex("IndustrialWorkerID");
 
                     b.ToTable("WorkListings");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Description = "Electrical wiring and installation",
+                            IndustrialWorkerID = 1,
+                            Name = "Electrical"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Description = "Plumbing and pipe installation",
+                            IndustrialWorkerID = 1,
+                            Name = "Plumbing"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Description = "General construction and building work",
+                            IndustrialWorkerID = 1,
+                            Name = "Construction"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Description = "To paint the house walls",
+                            Name = "Painter"
+                        });
                 });
 
             modelBuilder.Entity("Workers.Server.Model.Models.Workshop", b =>
@@ -286,6 +353,57 @@ namespace Workers.Server.Migrations
                     b.HasIndex("IndustrialWorkerID");
 
                     b.ToTable("Workshops");
+
+                    b.HasData(
+                        new
+                        {
+                            ID = 1,
+                            Description = "Training and workshop for electrical work",
+                            IndustrialWorkerID = 1,
+                            Workshop_Name = "Electrical Workshop"
+                        },
+                        new
+                        {
+                            ID = 2,
+                            Description = "Training and workshop for plumbing work",
+                            IndustrialWorkerID = 1,
+                            Workshop_Name = "Plumbing Workshop"
+                        },
+                        new
+                        {
+                            ID = 3,
+                            Description = "Training and workshop for construction work",
+                            IndustrialWorkerID = 1,
+                            Workshop_Name = "Construction Workshop"
+                        },
+                        new
+                        {
+                            ID = 4,
+                            Description = "Training and workshop for painting work",
+                            IndustrialWorkerID = 1,
+                            Workshop_Name = "Painter Workshop"
+                        },
+                        new
+                        {
+                            ID = 5,
+                            Description = "Training and workshop for HVAC systems",
+                            IndustrialWorkerID = 1,
+                            Workshop_Name = "HVAC Workshop"
+                        },
+                        new
+                        {
+                            ID = 6,
+                            Description = "Training and workshop for carpentry work",
+                            IndustrialWorkerID = 1,
+                            Workshop_Name = "Carpentry Workshop"
+                        },
+                        new
+                        {
+                            ID = 7,
+                            Description = "Training and workshop for masonry work",
+                            IndustrialWorkerID = 1,
+                            Workshop_Name = "Masonry Workshop"
+                        });
                 });
 
             modelBuilder.Entity("Workers.Server.Models.ApplicationUser", b =>
@@ -357,6 +475,59 @@ namespace Workers.Server.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1a2e6f7b-dc4a-4c81-bbe2-8cd28f5e63f2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5773c967-a419-40bf-938a-54b0c212f418",
+                            Email = "adminmanager@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "adminmanager@EXAMPLE.COM",
+                            NormalizedUserName = "ADMINMANAGER",
+                            PasswordHash = "AQAAAAIAAYagAAAAELqGhsASe1ohQ3z8mByXC4szjcvJQmsdhDakNXC/qW6g+Ci72htrIJ6grTVnU7ocCA==",
+                            PhoneNumber = "0772342313",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "a7316855-7ac5-41ed-9d4c-802ff66aa49d",
+                            TwoFactorEnabled = false,
+                            UserName = "AdminManager"
+                        },
+                        new
+                        {
+                            Id = "3f9d28e4-6217-4a55-99b2-6e124c81f7c5",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fa214350-e70c-49ad-8a50-2fd87b9f1724",
+                            Email = "workeradmin@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "workeradmin@EXAMPLE.COM",
+                            NormalizedUserName = "WORKERADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE2gMdYpUSyj62y2LGZ02DQToh1i0nhzWtZFPRVWDSXkobu6Anj2iYbZ4Ag7Nf5wEg==",
+                            PhoneNumber = "0781231251",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "11dce334-5986-4580-9dd7-280f21748ea3",
+                            TwoFactorEnabled = false,
+                            UserName = "WorkerAdmin"
+                        },
+                        new
+                        {
+                            Id = "8b76a915-47c3-4f0d-98d6-9b284edaf7ae",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c8e01963-7615-4378-8c47-24b32de877d1",
+                            Email = "useradmin@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "useradmin@EXAMPLE.COM",
+                            NormalizedUserName = "USERADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEICYapUz0d/xn3F77oMnFSqa9u7lw3OfIInwy/UuxuEJoVB6yCf8ipVMPW5xFF9fpA==",
+                            PhoneNumber = "0791231541",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "1a586fe9-8460-41a1-bb13-e639fcbae5dd",
+                            TwoFactorEnabled = false,
+                            UserName = "UserAdmin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -410,21 +581,32 @@ namespace Workers.Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Workers.Server.Model.Models.IndustrialWorker", b =>
+                {
+                    b.HasOne("Workers.Server.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("IndustrialWorker")
+                        .HasForeignKey("Workers.Server.Model.Models.IndustrialWorker", "UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("Workers.Server.Model.Models.Review", b =>
                 {
-                    b.HasOne("Workers.Server.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Workers.Server.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("Review")
+                        .HasForeignKey("Workers.Server.Model.Models.Review", "UserID")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Workers.Server.Model.Models.Workshop", "Workshop")
                         .WithMany("Reviews")
                         .HasForeignKey("WorkshopID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Workshop");
                 });
@@ -433,9 +615,7 @@ namespace Workers.Server.Migrations
                 {
                     b.HasOne("Workers.Server.Model.Models.IndustrialWorker", "IndustrialWorker")
                         .WithMany("WorkListings")
-                        .HasForeignKey("IndustrialWorkerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IndustrialWorkerID");
 
                     b.Navigation("IndustrialWorker");
                 });
@@ -461,6 +641,15 @@ namespace Workers.Server.Migrations
             modelBuilder.Entity("Workers.Server.Model.Models.Workshop", b =>
                 {
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Workers.Server.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("IndustrialWorker")
+                        .IsRequired();
+
+                    b.Navigation("Review")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

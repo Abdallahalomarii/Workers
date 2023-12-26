@@ -2,7 +2,7 @@
 {
     public class PutAndAddWorkListingDTO
     {
-        public int IndustrialWorkerID { get; set; }
+        public int? IndustrialWorkerID { get; set; }
 
         public string Name { get; set; }
 

@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Workers.Server.Model.DTOs;
 using Workers.Server.Model.Interfaces;
 
@@ -16,10 +19,40 @@ namespace Workers.Server.Controllers
              _user = user;
         }
 
-        [HttpPost("Register")]
-        public async Task<ActionResult<UserDTO>> SignUp(RegisterDTO registerDTO)
+        [HttpPost("RegisterUser")]
+        public async Task<ActionResult<UserDTO>> SignUpAsUser(RegisterDTO registerDTO)
         {
             var user = await _user.Register(registerDTO, this.ModelState, User);
+            if (ModelState.IsValid)
+            {
+                if (user != null)
+                    return user;
+
+                else
+                    return NotFound();
+            }
+            return BadRequest(new ValidationProblemDetails(ModelState));
+        }
+
+        [HttpPost("RegisterWorker")]
+        public async Task<ActionResult<UserDTO>> SignUpAsWorker(RegisterDTO registerDTO)
+        {
+            var user = await _user.RegisterAsAWorker(registerDTO, this.ModelState, User);
+            if (ModelState.IsValid)
+            {
+                if (user != null)
+                    return user;
+
+                else
+                    return NotFound();
+            }
+            return BadRequest(new ValidationProblemDetails(ModelState));
+        }
+        
+        [HttpPost("RegisterManager")]
+        public async Task<ActionResult<UserDTO>> SignupManager(RegisterDTO registerDTO)
+        {
+            var user = await _user.RegisterAsManager(registerDTO, this.ModelState, User);
             if (ModelState.IsValid)
             {
                 if (user != null)
@@ -53,6 +86,14 @@ namespace Workers.Server.Controllers
         {
             var profile = await _user.GetUser(User);
             return Ok(profile);
+        }
+
+        [HttpPost("Logout")]
+        //[Authorize]
+        public async Task<ActionResult> Logout()
+        {
+            await _user.Logout(User);
+            return Ok();
         }
     }
 }

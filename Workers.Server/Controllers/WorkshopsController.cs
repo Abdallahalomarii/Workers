@@ -26,12 +26,13 @@ namespace Workers.Server.Controllers
         }
 
         // GET: api/Workshops
-        [Authorize(Roles = "Admin Manager")]
-        [HttpGet]
-        public async Task<ActionResult<List<WorkshopDTO>>> GetWorkshops()
+        //[Authorize(Roles = "Admin Manager")]
+        [AllowAnonymous]
+        [HttpGet("worker/{workerId}")]
+        public async Task<ActionResult<List<WorkshopDTO>>> GetWorkshops([FromRoute] int workerId)
         {
 
-            var workshops = await _context.GetAllWorkshop();
+            var workshops = await _context.GetAllWorkshop(workerId);
             if (workshops == null)
             {
                 return NotFound();

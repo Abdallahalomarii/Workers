@@ -26,7 +26,7 @@ namespace Workers.Server.Controllers
         }
 
         // GET: api/WorkListings
-        [AllowAnonymous]
+        [Authorize (Roles = "Admin Manager, Worker Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<WorkListingDTO>>> GetWorkListings()
         {
@@ -76,7 +76,7 @@ namespace Workers.Server.Controllers
         // POST: api/WorkListings
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
 
-        [Authorize(Roles = "Admin Manager")]
+        //[Authorize(Roles = "Admin Manager")]
         [HttpPost]
         public async Task<ActionResult<WorkListingDTO>> PostWorkListing(PutAndAddWorkListingDTO workListing)
         {

@@ -20,11 +20,12 @@ namespace Workers.Server.Model.Services
             var worker = new IndustrialWorker
             {
                 Name = industrialWorker.Name,
+                UserID = industrialWorker.UserID,
                 Location = industrialWorker.Location,
-                Phone = industrialWorker.Phone,
+                PhoneNumber = industrialWorker.PhoneNumber,
                 PricePerHour = industrialWorker.PricePerHour,
-                Rate = industrialWorker.Rate,
-                IsActive = industrialWorker.IsActive
+                //Rate = industrialWorker.Rate,
+                IsActive = true
             };
 
             await _context.IndustrialWorkers.AddAsync(worker);
@@ -64,9 +65,9 @@ namespace Workers.Server.Model.Services
                     ID = wk.ID,
                     Name = wk.Name,
                     Location = wk.Location,
-                    Phone = wk.Phone,
+                    PhoneNumber = wk.PhoneNumber,
                     PricePerHour = wk.PricePerHour,
-                    Rate = wk.Rate,
+                    //Rate = wk.Rate,
                     IsActive = wk.IsActive
                 }).ToListAsync();
             if (worker.Count != 0)
@@ -88,9 +89,9 @@ namespace Workers.Server.Model.Services
                    ID = wk.ID,
                    Name = wk.Name,
                    Location = wk.Location,
-                   Phone = wk.Phone,
+                   PhoneNumber = wk.PhoneNumber,
                    PricePerHour = wk.PricePerHour,
-                   Rate = wk.Rate,
+                   //Rate = wk.Rate,
                    IsActive = wk.IsActive
                }).FirstOrDefaultAsync();
             if (worker != null)
@@ -111,9 +112,13 @@ namespace Workers.Server.Model.Services
                 worker.Name = industrialWorker.Name;
                 worker.Location = industrialWorker.Location;
                 worker.PricePerHour = industrialWorker.PricePerHour;
-                worker.Rate = industrialWorker.Rate;
                 worker.IsActive = industrialWorker.IsActive;
-                worker.Phone = industrialWorker.Phone;
+                worker.PhoneNumber = industrialWorker.PhoneNumber;
+
+                if (industrialWorker.Rate != null)
+                {
+                    worker.Rate = industrialWorker.Rate;
+                }
 
                 _context.Entry(worker).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -131,6 +136,6 @@ namespace Workers.Server.Model.Services
             {
                 return null;
             }
-            }
         }
     }
+}
