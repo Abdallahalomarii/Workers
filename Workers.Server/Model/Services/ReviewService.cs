@@ -29,7 +29,7 @@ namespace Workers.Server.Model.Services
             {
                 UserID = user.Id,
                 WorkshopID = review.WorkshopID,
-                Commennt = review.Commennt,
+                Comment = review.Comment,
                 Rating = review.Rating,
             };
             await _context.Reviews.AddAsync(newReview);
@@ -66,7 +66,7 @@ namespace Workers.Server.Model.Services
                 {
                     UserID = rv.UserID,
                     WorkshopID = rv.WorkshopID,
-                    Commennt = rv.Commennt,
+                    Comment = rv.Comment,
                     Rating = rv.Rating
                 }).ToListAsync();
             if (reviews.Count == 0)
@@ -83,7 +83,7 @@ namespace Workers.Server.Model.Services
                 {
                     UserID = rv.UserID,
                     WorkshopID = rv.WorkshopID,
-                    Commennt = rv.Commennt,
+                    Comment = rv.Comment,
                     Rating = rv.Rating
                 }).FirstOrDefaultAsync(keys => keys.UserID == userID && keys.WorkshopID == workshopId);
             if (review == null)
@@ -100,7 +100,7 @@ namespace Workers.Server.Model.Services
             {
                 reviewToUpdate.UserID = userID;
                 reviewToUpdate.WorkshopID = workshopId;
-                reviewToUpdate.Commennt = review.Commennt;
+                reviewToUpdate.Comment = review.Comment;
                 reviewToUpdate.Rating = review.Rating;
 
                 _context.Entry(reviewToUpdate).State = EntityState.Modified;

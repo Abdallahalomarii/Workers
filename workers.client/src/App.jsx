@@ -1,65 +1,53 @@
-import { useEffect, useState } from 'react';
+import Login from './Component/Auth/Login';
+import React, { useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Fetch from './Component/Fetch';
+import Home from './Component/Home/Home';
+import Register from './Component/Auth/Register';
+import Header from './Component/Header';
+import RegisterWorker from './Component/Auth/RegisterWorker';
+import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useAuth } from './Component/AuthContext/AuthContext';
+import Workers from './Component/Workers/Workers';
+import WorkerDetails from './Component/Workers/WorkerDetails';
+import ListWorkShop from './Component/Workers/WorkShops/ListWorkShop';
 
 function App() {
-    const [workers, setWorkers] = useState();
+    const token = Cookies.get('token');
 
+    const { setAuthData } = useAuth();
+        const loadUsername = async () => {
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            };
+
+            const response = await axios.get('https://localhost:7230/api/User/Profile', config);
+            setAuthData(response.data.userName);
+        }
+        
+    
     useEffect(() => {
-        populateWorkersData();
+        if (token)
+            loadUsername();
     }, []);
-
-    const contents = workers === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tabelLabel">
-            <thead>
-                <tr>
-                    <th>name</th>
-                    <th>location</th>
-                    <th>phone</th>
-                    <th>pricePerHour</th>
-                </tr>
-            </thead>
-            <tbody>
-                {workers.map(worker =>
-                    <tr key={worker.workerID}>
-                        <td>{worker.name}</td>
-                        <td>{worker.location}</td>
-                        <td>{worker.phone}</td>
-                        <td>{worker.pricePerHour}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-
     return (
-        <div>
-            <h1 id="tabelLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
-    );
-
-    async function populateWorkersData() {
-        const apiUrl = 'https://localhost:7230/api/IndustrialWorkers';
-        //fetch(apiUrl, {
-        //    method: 'GET',
-        //    headers: {
-        //        'Accept': 'application/json',
-        //    },
-        //})
-        //    .then(response => response.json())
-        //    .then(data => setWorkers(data))
-        //    .catch(error => console.error('Error:', error));
-
-        axios.get(apiUrl)
-            .then(res => {
-                setWorkers(res.data);
-            })
-            .catch(error => {
-                console.log('Error', error);
-            });
-
-    }
+        <>
+                        <Header />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/fetch" element={<Fetch />} />
+                <Route path="/registerWorker" element={<RegisterWorker />} />
+                <Route path="/Workers" element={<Workers />} />
+                <Route path="/WorkerDetails/:workerId" element={<WorkerDetails />} />
+                <Route path="/workshops/:workerId" element={<ListWorkShop /> } />
+            </Routes>
+        </>
+    )
 }
 
 export default App;

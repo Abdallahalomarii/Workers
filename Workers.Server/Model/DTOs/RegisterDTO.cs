@@ -15,6 +15,6 @@ namespace Workers.Server.Model.DTOs
 
         public string? Location { get; set; }
 
-        public IList<string> Roles { get; set; }
+        public string? Roles { get; set; }
     }
 }

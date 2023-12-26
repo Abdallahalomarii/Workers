@@ -7,7 +7,7 @@ namespace Workers.Server.Model.Interfaces
     {
         public Task<WorkshopDTO> AddWorkshop(PutAndAddWorkshopDTO workshop);
 
-        public Task<List<WorkshopDTO>> GetAllWorkshop();
+        public Task<List<WorkshopDTO>> GetAllWorkshop(int workerId);
 
         public Task<WorkshopDTO> GetWorkshopsByID(int WorkshopId);
 

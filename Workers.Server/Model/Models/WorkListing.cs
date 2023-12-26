@@ -7,12 +7,15 @@ namespace Workers.Server.Model.Models
     {
         public int ID { get; set; }
 
-        public int IndustrialWorkerID { get; set; }
+        public int? IndustrialWorkerID { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        public IndustrialWorker IndustrialWorker { get; set; }
+        public IndustrialWorker? IndustrialWorker { get; set; }
+
+      
     }
 }

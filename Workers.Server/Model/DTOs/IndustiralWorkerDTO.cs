@@ -6,11 +6,13 @@ namespace Workers.Server.Model.DTOs
     {
         public int ID { get; set; }
 
+        public string? UserID { get; set; }
+
         public string Name { get; set; }
 
         public string? Location { get; set; }
 
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
         public int PricePerHour { get; set; }
 

@@ -77,7 +77,7 @@ namespace Workers.Server.Controllers
         // POST: api/IndustrialWorkers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // TODO: Add property to the worker which is the username to specify this worker and make realtion between the user and the worker!!
-        [Authorize(Roles ="User Admin")]
+        //[Authorize(Roles ="User Admin")]
         [HttpPost]
         public async Task<ActionResult<IndustrialWorkerDTO>> PostIndustrialWorker(PutAndAddIndustrialWorkerDTO industrialWorker)
         {

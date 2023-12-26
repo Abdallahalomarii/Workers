@@ -8,9 +8,15 @@ namespace Workers.Server.Model.Interfaces
     {
         public Task<UserDTO> Register(RegisterDTO register, ModelStateDictionary modelState, ClaimsPrincipal principal);
 
+        public Task<UserDTO> RegisterAsAWorker(RegisterDTO register, ModelStateDictionary modelState, ClaimsPrincipal principal);
+
+        public Task<UserDTO> RegisterAsManager(RegisterDTO register, ModelStateDictionary modelState, ClaimsPrincipal principal);
+
         public Task<UserDTO> Authenticate(string username, string password);
 
         public Task<UserDTO> GetUser(ClaimsPrincipal principal);
+
+        public Task Logout(ClaimsPrincipal principal);
 
     }
 }
