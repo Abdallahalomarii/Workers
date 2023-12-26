@@ -27,6 +27,7 @@ function WorkerDetails() {
         navigate(`/workshops/${workerId}`);
     }
     return (
+
         <div className="container mt-4">
             <h2 className="mb-4">Worker Details</h2>
             <div className="card">
@@ -43,7 +44,8 @@ function WorkerDetails() {
                     <p className="card-text">
                         <strong>Price:</strong> {workerDetails.pricePerHour}<em className="text-success">$</em>
                     </p>
-                    {workerDetails.isActive && <span className="rounded rounded-5 p-1 bg-success"></span>}
+
+                    {workerDetails.isActive ? <span className="rounded rounded-5 p-1 bg-success"></span> : <span className="rounded rounded-5 p-1 bg-danger"></span>}
                 </div>
                 <button className="btn btn-secondary p-2 m-1 col-2 " onClick={() => goToWrodkshops()}>
                 workshops

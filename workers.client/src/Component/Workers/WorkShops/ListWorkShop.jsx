@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Card, Container, Row, Col, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+
 
 function ListWorkShop() {
     const { workerId } = useParams();
     const [workshops, setWorkshops] = useState([]);
-
+    const navigate = useNavigate();
     const fetchWorkshopsData = async () => {
         try {
             const response = await axios.get(`https://localhost:7230/api/Workshops/worker/${workerId}`);
@@ -24,6 +26,9 @@ function ListWorkShop() {
         fetchWorkshopsData();
     }, []);
 
+    const GoToReview = (workshopId) => {
+        navigate(`/review/${workshopId}`)
+    }
     return (
         <Container className="mt-4">
             <h2>Workshops List</h2>
@@ -36,7 +41,7 @@ function ListWorkShop() {
                                 <Card.Text>{workshop.description}</Card.Text>
                             </Card.Body>
                             <Card.Footer>
-                                <Button>
+                                <Button onClick={() => GoToReview(workshop.id)}>
                                     Go to Review
                                 </Button>
                             </Card.Footer>

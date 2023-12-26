@@ -12,6 +12,7 @@ import { useAuth } from './Component/AuthContext/AuthContext';
 import Workers from './Component/Workers/Workers';
 import WorkerDetails from './Component/Workers/WorkerDetails';
 import ListWorkShop from './Component/Workers/WorkShops/ListWorkShop';
+import MainReview from './Component/Workers/WorkShops/Review/MainReview';
 
 function App() {
     const token = Cookies.get('token');
@@ -44,7 +45,8 @@ function App() {
                 <Route path="/registerWorker" element={<RegisterWorker />} />
                 <Route path="/Workers" element={<Workers />} />
                 <Route path="/WorkerDetails/:workerId" element={<WorkerDetails />} />
-                <Route path="/workshops/:workerId" element={<ListWorkShop /> } />
+                <Route path="/workshops/:workerId" element={<ListWorkShop />} />
+                <Route path="/review/:workshopId" element={<MainReview /> } />
             </Routes>
         </>
     )
