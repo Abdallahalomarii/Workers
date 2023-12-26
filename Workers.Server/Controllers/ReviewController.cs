@@ -11,7 +11,7 @@ namespace Workers.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin Manager, User Admin")]
+    [Authorize]
     public class ReviewController : ControllerBase
     {
         private readonly IReview _context;
